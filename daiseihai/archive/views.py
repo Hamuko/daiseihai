@@ -36,7 +36,8 @@ class TeamListView(ListView):
 
     def get_queryset(self):
         video_count = Count('home_games') + Count('away_games')
-        return self.model.objects.annotate(video_count=video_count).filter(video_count__gt=0)
+        return self.model.objects.annotate(video_count=video_count)\
+                                 .filter(video_count__gt=0)
 
 
 class TournamentDetailView(VideoViewMixin, DetailView):
@@ -44,7 +45,8 @@ class TournamentDetailView(VideoViewMixin, DetailView):
 
     def get_videos(self):
         queryset = super().get_videos()
-        part = Window(expression=RowNumber(), partition_by=F('date'), order_by=('date', ))
+        part = Window(expression=RowNumber(), partition_by=F('date'),
+                      order_by=('date', 'order'))
         part_count = Window(expression=Count('*'), partition_by=F('date'))
         return queryset.filter(tournament=self.object)\
                        .annotate(part=part, part_count=part_count)
