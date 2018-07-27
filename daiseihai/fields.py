@@ -30,6 +30,8 @@ class ColorField(models.Field):
         return int(value[1:], 16)
 
     def db_type(self, connection):
+        if connection.settings_dict['ENGINE'] == 'django.db.backends.postgresql':
+            return 'integer'
         return 'integer UNSIGNED'
 
     def formfield(self, **kwargs):
