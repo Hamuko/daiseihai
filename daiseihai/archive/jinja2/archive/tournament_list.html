@@ -1,0 +1,29 @@
+{% extends "archive/base.html" %}
+
+{% block content %}
+    <div class="grid-wrapper">
+        <div class="tournaments grid">
+            {% for year, objects in object_list|groupby('start_date.year')|reverse %}
+                <div class="year">
+                    <h2>{{ year }}</h2>
+                </div>
+                {% for object in objects %}
+                    <div class="tournament card">
+                        <a class="block-link" href="{{ url('tournament', slug=object.slug) }}"></a>
+                        <div class="logo">
+                            <img src="{{ object.logo.url }}" alt="{{ object.name }}">
+                        </div>
+                        <div class="info">
+                            <h3>{{ object.name }}</h3>
+                            {% if object.video_count == 1 %}
+                                <p>1 video</p>
+                            {% else %}
+                                <p>{{ object.video_count }} videos</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

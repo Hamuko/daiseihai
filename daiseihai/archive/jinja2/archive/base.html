@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Bootleg 4CC{% endblock %}</title>
+    <link rel="stylesheet" href="{{ static('style.css') }}">
+    <script src="{{ static('main.js') }}"></script>
+</head>
+<body>
+    <header>
+        <a href="{{ url('index') }}">
+            <h1>Bootleg 4CC</h1>
+        </a>
+        <nav>
+            <a href="{{ url('team_list') }}">Teams</a>
+        </nav>
+    </header>
+    <div class="content">{% block content %}{% endblock %}</div>
+    <div id="videoOverlay">
+        <div id="videoContainer"></div>
+        <div id="bookmarkContainer"></div>
+    </div>
+</body>
+</html>

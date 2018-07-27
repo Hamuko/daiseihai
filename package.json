@@ -1,0 +1,19 @@
+{
+  "name": "daiseihai",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "yarn build-css & yarn build-js",
+    "build-css": "sass --style=compressed --no-source-map daiseihai/assets/stylesheets/style.scss daiseihai/static/style.css",
+    "build-js": "uglifyjs daiseihai/assets/javascript/main.js -o daiseihai/static/main.js",
+    "postinstall": "mkdir -p daiseihai/static && yarn build",
+    "watch-css": "sass --watch --style=compressed --no-source-map daiseihai/assets/stylesheets/style.scss:daiseihai/static/style.css"
+  },
+  "author": "Hamuko <hamuko@burakku.com>",
+  "license": "ISC",
+  "dependencies": {
+    "sass": "^1.10.0",
+    "uglify-js": "^3.4.5"
+  }
+}

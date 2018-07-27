@@ -1,0 +1,300 @@
+@import "normalize";
+
+$grid-padding: 1em;
+$card-shadow-blur: 8px;
+$card-shadow-color: rgba(0, 0, 0, 0.2);
+$box-border: 1px solid #c8c8c8;
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    background-color: #f5f5f5;
+    font-family: "Helvetica Neue","Segoe UI",sans-serif;
+}
+
+body {
+    display: grid;
+    grid-template-rows: 6em 1fr;
+}
+
+header {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 2em;
+    text-transform: uppercase;
+
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    h1 {
+        font-size: 2.5em;
+        margin: 0;
+
+        @media (max-width: 500px) {
+            font-size: 2em;
+        }
+    }
+}
+
+nav {
+    font-weight: 500;
+    font-size: 1.25em;
+
+    a {
+        padding: 0 0.5em;
+    }
+}
+
+.block-link {
+    display: block;
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    z-index: 25;
+}
+
+.card {
+    background-color: #fff;
+    border: $box-border;
+}
+
+.grid-wrapper {
+    display: flex;
+    justify-content: center;
+
+    &> div {
+        max-width: 1600px;
+        width: 100vw;
+        padding: 2em;
+    }
+}
+
+.grid {
+    display: grid;
+    grid-column-gap: $grid-padding;
+    grid-row-gap: $grid-padding;
+
+    &.teams {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+
+    &.tournaments {
+        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+
+        @media (max-width: 500px) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    &.videos {
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+
+        @media (max-width: 500px) {
+            grid-template-columns: 1fr;
+        }
+    }
+}
+
+.team {
+    display: flex;
+    font-size: 4em;
+    font-weight: 800;
+    justify-content: center;
+    align-items: center;
+    line-height: 2em;
+    position: relative;
+
+    &.small {
+        font-size: 2.8em;
+    }
+}
+
+.tournament {
+    align-items: center;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+    padding: 1em;
+
+    * {
+        margin: 0;
+    }
+
+    .logo {
+        width: 123px;
+        margin-right: 1.5em;
+        flex-shrink: 0;
+        z-index: 10;
+
+        img {
+            width: 100%;
+            height: auto;
+            z-index: 10;
+        }
+
+        @media (max-width: 600px) {
+            width: 100px;
+        }
+
+        @media (max-width: 450px) {
+            position: absolute;
+            opacity: 0.2;
+            width: 90%;
+        }
+    }
+
+    .info {
+        flex-grow: 2;
+
+        h3 {
+            font-size: 1.3em;
+        }
+    }
+}
+
+.info-header {
+    padding: 0 2em;
+    display: flex;
+    align-items: center;
+
+    h2, h3 {
+        line-height: 1em;
+        margin: 0 0.5em 0 0;
+        font-size: 1.5em;
+    }
+    h3 {
+        font-weight: 400;
+    }
+
+    &.tournament-info {
+        text-transform: uppercase;
+    }
+}
+
+.video {
+    display: flex;
+    flex-direction: column;
+
+    .buttons {
+        display: flex;
+        width: 100%;
+        text-align: center;
+        text-transform: uppercase;
+        background-color: #fbfbfb;
+
+        a {
+            width: 100%;
+            color: #000;
+            text-decoration: none;
+            border-top: $box-border;
+            border-right: $box-border;
+            padding: 0.6em 0;
+            font-weight: 600;
+            font-size: 1.2em;
+
+            &:first-child {
+                border-left: 0;
+            }
+
+            &:last-child {
+                border-right: 0;
+            }
+        }
+    }
+
+    .info {
+        flex-grow: 2;
+        padding: 1em;
+
+        h4 {
+            margin: 0;
+            font-weight: 400;
+            font-size: 1em;
+        }
+
+        time {
+            display: block;
+            font-weight: 500;
+            font-size: 1.2em;
+        }
+
+        .matchups {
+            margin-top: 0.8em;
+            display: grid;
+            grid-column-gap: 3px;
+            grid-row-gap: 3px;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            text-align: center;
+            font-weight: 500;
+            line-height: 1.15em;
+
+            > div {
+                display: inline-grid;
+                grid-template-columns: 1fr 1fr;
+
+                > div {
+                    padding: 5px 0;
+                    position: relative;
+
+                    &.small {
+                        font-size: 0.7em;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.year {
+    grid-column: 1 / -1;
+    margin-top: 0.5em;
+
+    h2 {
+        margin: 0;
+    }
+}
+
+#videoOverlay {
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: none;
+    height: 100vh;
+    justify-content: center;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100vw;
+
+    &.active {
+        display: flex;
+        z-index: 50;
+        flex-direction: column;
+    }
+
+    div {
+        z-index: 100;
+    }
+
+    video {
+        max-height: 90vh;
+        max-width: 100vw;
+        border: 1px solid #000;
+    }
+}
+
+#bookmarkContainer {
+    button {
+        background: none;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        display: inline-block;
+        margin: 0.5em;
+        text-decoration: none;
+    }
+}

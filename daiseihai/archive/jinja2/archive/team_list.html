@@ -1,0 +1,16 @@
+{% extends "archive/base.html" %}
+
+{% block title %}Teams - Bootleg 4CC{% endblock %}
+
+{% block content %}
+    <div class="grid-wrapper">
+        <div class="teams grid">
+            {% for object in object_list %}
+                <div class="team{% if object.long_name %} small{% endif %}" style="{{ object.style }}">
+                    <a class="block-link" href="{{ url('team_detail', slug=object.slug) }}"></a>
+                    {{ object.name }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

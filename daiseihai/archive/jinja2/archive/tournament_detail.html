@@ -1,0 +1,19 @@
+{% extends "archive/base.html" %}
+
+{% from "archive/videos.html" import video_card %}
+
+{% block title %}{{ object.name }} - Bootleg 4CC{% endblock %}
+
+{% block content %}
+    <div class="info-header tournament-info">
+        <h2>{{ object.name }}</h2>
+        <h3>{{ object.start_date|dateformat }} - {{ object.end_date|dateformat }}</h3>
+    </div>
+    <div class="grid-wrapper">
+        <div class="videos grid">
+            {% for video in videos %}
+                {{ video_card(video) }}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
