@@ -36,7 +36,7 @@ class TeamListView(ListView):
 
     def get_queryset(self):
         video_count = Count('home_games') + Count('away_games')
-        return self.model.objects.annotate(video_count=video_count).filter(video_count__gt=-1)
+        return self.model.objects.annotate(video_count=video_count).filter(video_count__gt=0)
 
 
 class TournamentDetailView(VideoViewMixin, DetailView):
