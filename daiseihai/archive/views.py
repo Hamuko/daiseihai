@@ -55,7 +55,8 @@ class TournamentListView(ListView):
 
     def get_queryset(self):
         """Return all visible tournaments."""
-        return self.model.objects.annotate(video_count=Count('videos'))\
+        video_count = Count('videos', filter=Q(videos__is_visible=True))
+        return self.model.objects.annotate(video_count=video_count)\
                                  .filter(video_count__gt=0)
 
 
