@@ -2,6 +2,14 @@
 
 {% from "archive/videos.html" import video_card %}
 
+{% block metadata %}
+<meta property="og:title" content="{{ object.name }}" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="{{ request.build_absolute_uri() }}" />
+<meta property="og:image" content="{{ object.logo.url }}" />
+<meta property="og:site_name" content="Bootleg 4CC" />
+{% endblock %}
+
 {% block title %}{{ object.name }} - Bootleg 4CC{% endblock %}
 
 {% block content %}
