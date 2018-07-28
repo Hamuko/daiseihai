@@ -69,7 +69,7 @@ WSGI_APPLICATION = 'daiseihai.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'HOST': '',
+        'HOST': 'localhost',
         'NAME': 'daiseihai',
         'USER': 'daiseihai',
         'PASSWORD': secrets.DATABASE_PASSWORD,

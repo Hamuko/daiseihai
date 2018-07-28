@@ -4,7 +4,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['bootleg.hamuko.moe']
 
-STATIC_ROOT = '/var/www/bootleg.hamuko.moe/html/static/'
-MEDIA_ROOT = '/var/www/bootleg.hamuko.moe/html/media/'
+STATIC_ROOT = '/srv/www/bootleg.hamuko.moe/html/static/'
+MEDIA_ROOT = '/srv/www/bootleg.hamuko.moe/html/media/'
 
-VIDEO_URL = 'https://hamuko.moe/4cc/'
+VIDEO_URL = 'https://bootleg.hamuko.moe/videos/'
