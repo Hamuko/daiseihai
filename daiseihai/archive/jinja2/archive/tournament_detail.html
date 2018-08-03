@@ -8,7 +8,7 @@
 <meta property="og:url" content="{{ request.build_absolute_uri() }}" />
 <meta property="og:image" content="{{ object.logo.url }}" />
 <meta property="og:site_name" content="Bootleg 4CC" />
-<meta property="og:description" content="Bootleg recordings of {{ object.name }}. {% with video_count = videos|length %}{{ video_count }} video{% if video_count != 1 %}s{% endif %}{% endwith %}." />
+<meta property="og:description" content="Bootleg recordings of the {{ object.name }}. {% with video_count = videos|length %}{{ video_count }} video{% if video_count != 1 %}s{% endif %}{% endwith %}." />
 {% endblock %}
 
 {% block title %}{{ object.name }} - Bootleg 4CC{% endblock %}
