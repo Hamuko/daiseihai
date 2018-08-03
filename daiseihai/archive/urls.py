@@ -5,7 +5,7 @@ from daiseihai.archive import views
 urlpatterns = [
     path('',
          views.TournamentListView.as_view(), name='index'),
-    path('team/<slug>',
+    path('team/<slug>/',
          views.TeamDetailView.as_view(), name='team_detail'),
     path('teams/',
          views.TeamListView.as_view(), name='team_list'),
