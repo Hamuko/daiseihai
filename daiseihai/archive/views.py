@@ -28,7 +28,8 @@ class TeamDetailView(VideoViewMixin, DetailView):
     def get_videos(self):
         queryset = super().get_videos()
         team_filter = Q(matchups__home=self.object) | Q(matchups__away=self.object)
-        return queryset.select_related('tournament').filter(team_filter).reverse()
+        return queryset.select_related('tournament')\
+                       .filter(team_filter).reverse().distinct()
 
 
 class TeamListView(ListView):
