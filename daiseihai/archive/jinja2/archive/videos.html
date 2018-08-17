@@ -2,28 +2,77 @@
     <div class="video card">
         <div class="info">
             {% if name %}<h4>{{ object.tournament.name }}</h4>{% endif %}
-            <time>
-                {{ object.date|dateformat }}
-                {% if object.part_count and object.part_count > 1 %}({{ object.part }}/{{ object.part_count }}){% endif %}
-            </time>
-            <div class="matchups">
-                {% for matchup in object.matchups.all() %}
-                    <div>
-                        <div {% if matchup.home.long_name %}class="small"{% endif %} style="{{ matchup.home.style }}">
-                            <a class="block-link" href="{{ url('team_detail', slug=matchup.home.slug) }}"></a>
-                            {{ matchup.home }}
-                        </div>
-                        <div {% if matchup.away.long_name %}class="small"{% endif %} style="{{ matchup.away.style }}">
-                            <a class="block-link" href="{{ url('team_detail', slug=matchup.away.slug) }}"></a>
-                            {{ matchup.away }}
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
+            {% if object.type == 1 %}
+                {{ info_normal(object) }}
+                {{ matchup_normal(object.matchups.all()) }}
+            {% elif object.type == 2 %}
+                {% set matchup = object.matchups.first() %}
+                {{ info_single(object, matchup) }}
+                {{ matchup_single(matchup) }}
+            {% endif %}
         </div>
         <div class="buttons">
-            <a href="{{ object.link }}" class="stream-link" data-id="{{ object.id }}">Stream</a>
-            <a href="{{ object.link }}" target="_blank">Download</a>
+            {% if object.type == 1 %}
+                {{ buttons_normal(object) }}
+            {% elif object.type == 2 %}
+                {{ buttons_single(object) }}
+            {% endif %}
+        </div>
+    </div>
+{%- endmacro %}
+
+{% macro buttons_normal(object) -%}
+    <a href="{{ object.link }}" class="stream-link" data-id="{{ object.id }}">Stream</a>
+    <a href="{{ object.link }}" target="_blank">Download</a>
+{%- endmacro %}
+
+{% macro buttons_single(object) -%}
+    {% if object.intro_url %}<a href="{{ object.intro_url }}" target="_blank">Pre-match</a>{% endif %}
+    <a href="{{ object.url }}" target="_blank">Match</a>
+{%- endmacro %}
+
+{% macro info_normal(object) -%}
+    <time>
+        {{ object.date|dateformat }}
+        {% if object.part_count and object.part_count > 1 %}({{ object.part }}/{{ object.part_count }}){% endif %}
+    </time>
+{%- endmacro %}
+
+{% macro info_single(object, matchup) -%}
+    <div class="video-header">
+        <time>{{ object.date|dateformat }}</time>
+        <h3>{{ matchup.home.name }} – {{ matchup.away.name }}</h3>
+    </div>
+{%- endmacro %}
+
+{% macro matchup_normal(matchups) -%}
+    <div class="matchups">
+        {% for matchup in matchups %}
+            <div>
+                <div {% if matchup.home.long_name %}class="small"{% endif %} style="{{ matchup.home.style }}">
+                    <a class="block-link" href="{{ url('team_detail', slug=matchup.home.slug) }}"></a>
+                    {{ matchup.home }}
+                </div>
+                <div {% if matchup.away.long_name %}class="small"{% endif %} style="{{ matchup.away.style }}">
+                    <a class="block-link" href="{{ url('team_detail', slug=matchup.away.slug) }}"></a>
+                    {{ matchup.away }}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{%- endmacro %}
+
+{% macro matchup_single(matchup) -%}
+    <div class="matchup">
+        <div>
+            <a href="{{ url('team_detail', slug=matchup.home.slug) }}">
+                <img src="{{ matchup.home.logo_image }}" alt="{{ matchup.home.name }}">
+            </a>
+        </div>
+        <div>
+            <a href="{{ url('team_detail', slug=matchup.away.slug) }}">
+                <img src="{{ matchup.away.logo_image }}" alt="{{ matchup.away.name }}">
+            </a>
         </div>
     </div>
 {%- endmacro %}

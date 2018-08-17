@@ -2,7 +2,7 @@ from datetime import date
 
 from django.test import TestCase
 
-from daiseihai.archive import factories
+from daiseihai.archive import constants, factories
 
 
 class TournamentTestCase(TestCase):
@@ -67,6 +67,29 @@ class TournamentTestCase(TestCase):
         self.assertContains(response, 'July 28, 2018 (1/2)', html=True)
         self.assertContains(response, 'July 28, 2018 (2/2)', html=True)
         self.assertNotContains(response, 'July 29, 2018', html=True)
+
+    def test_tournament_detail_singles(self):
+        """Test that tournament detail pages with single videos loads properly."""
+        team1 = factories.TeamFactory(name='/llsifg/', slug='llsifg')
+        team2 = factories.TeamFactory(name='/vitagen/', slug='vitagen')
+        team3 = factories.TeamFactory(name='/drg/', slug='drg')
+        team4 = factories.TeamFactory(name='/feg/', slug='feg')
+        tournament = factories.TournamentFactory()
+        video1 = factories.VideoFactory(tournament=tournament,
+                                        type=constants.VIDEO_TYPE_SINGLE,
+                                        date=date(2018, 7, 27), order=1)
+        video2 = factories.VideoFactory(tournament=tournament,
+                                        type=constants.VIDEO_TYPE_SINGLE,
+                                        date=date(2018, 7, 28), order=1)
+        factories.MatchupFactory(video=video1, home=team1, away=team2)
+        factories.MatchupFactory(video=video2, home=team3, away=team4)
+
+        response = self.client.get('/%s/' % tournament.slug)
+        self.assertEqual(response.status_code, 200)
+
+        self.assertContains(response, '/llsifg/ – /vitagen/')
+        self.assertContains(response, '/drg/ – /feg/')
+        self.assertContains(response, 'implyingrigged', 4)
 
     def test_tournament_list(self):
         """Test that only tournaments with visible videos are shown in the listing."""

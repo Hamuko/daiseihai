@@ -5,6 +5,7 @@ from django.conf import settings
 from django.db import models
 
 from daiseihai.fields import ColorField
+from daiseihai.archive import constants
 
 
 def _get_tournament_logo_path(instance, filename):
@@ -38,6 +39,12 @@ class Team(models.Model):
         return self.name
 
     @property
+    def logo_image(self):
+        """Returns the URL for the team's current logo on the wiki."""
+        name = self.name.replace('/', '')
+        return f'https://implyingrigged.info/wiki/Special:Redirect/file/{name}_logo.png'
+
+    @property
     def style(self) -> str:
         """Returns the team colors as CSS style string."""
         return f'background-color: {self.main_color}; color: {self.secondary_color};'
@@ -47,14 +54,20 @@ class Team(models.Model):
 
 
 class Video(models.Model):
+    type = models.IntegerField(choices=constants.VIDEO_TYPE_CHOICES,
+                               default=constants.VIDEO_TYPE_NORMAL)
     tournament = models.ForeignKey(Tournament, related_name='videos',
                                    on_delete=models.PROTECT)
     date = models.DateField()
     order = models.PositiveSmallIntegerField(default=1)
     filename = models.CharField(null=True, blank=True, max_length=200)
     url = models.CharField(null=True, blank=True, max_length=200)
+    intro_url = models.CharField(null=True, blank=True, max_length=200)
     duration = models.PositiveIntegerField(null=True, blank=True)
     is_visible = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f'{self.tournament.slug}, {self.date} ({self.order})'
 
     @property
     def link(self) -> str:

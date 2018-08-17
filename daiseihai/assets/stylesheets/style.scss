@@ -224,9 +224,31 @@ nav {
             font-size: 1.2em;
         }
 
-        .matchups {
+        .matchup, .matchups {
             margin-top: 0.8em;
             display: grid;
+        }
+
+        .matchup {
+            grid-template-columns: 2fr 1fr 2fr;
+
+            img {
+                max-width: 100%;
+                max-height: 100px;
+            }
+
+            div {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                &:last-child {
+                    grid-column: -1 / -2;
+                }
+            }
+        }
+
+        .matchups {
             grid-column-gap: $matchup-grid-gap;
             grid-row-gap: $matchup-grid-gap;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -246,6 +268,16 @@ nav {
                         font-size: 0.7em;
                     }
                 }
+            }
+        }
+
+        .video-header {
+            display: flex;
+            justify-content: space-between;
+
+            h3 {
+                margin: 0;
+                font-weight: 400;
             }
         }
     }
