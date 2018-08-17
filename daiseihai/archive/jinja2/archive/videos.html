@@ -41,7 +41,7 @@
 {% macro info_single(object, matchup) -%}
     <div class="video-header">
         <time>{{ object.date|dateformat }}</time>
-        <h3>{{ matchup.home.name }} – {{ matchup.away.name }}</h3>
+        {% if matchup %}<h3>{{ matchup.home.name }} – {{ matchup.away.name }}</h3>{% endif %}
     </div>
 {%- endmacro %}
 
