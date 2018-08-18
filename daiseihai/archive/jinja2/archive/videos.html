@@ -28,7 +28,7 @@
 
 {% macro buttons_single(object) -%}
     {% if object.intro_url %}<a href="{{ object.intro_url }}" target="_blank">Pre-match</a>{% endif %}
-    <a href="{{ object.url }}" target="_blank">Match</a>
+    <a href="{{ object.link }}" target="_blank">Match</a>
 {%- endmacro %}
 
 {% macro info_normal(object) -%}
