@@ -17,12 +17,30 @@
     <div class="info-header tournament-info">
         <h2>{{ object.name }}</h2>
         <h3>{{ object.start_date|dateformat }} - {{ object.end_date|dateformat }}</h3>
+        {% if videos|length >= 30 %}
+            <div class="day-selector">
+                {% for date in videos|map(attribute='date')|unique %}
+                    <a href="#day-{{ loop.index }}">Matchday {{ loop.index }}</a>
+                {% endfor %}
+            </div>
+        {% endif %}
     </div>
     <div class="grid-wrapper">
         <div class="videos grid">
-            {% for video in videos %}
-                {{ video_card(video) }}
-            {% endfor %}
+            {% if videos|length >= 30 %}
+                {% for day, video_list in videos|groupby('date') %}
+                    <div class="year" id="day-{{ loop.index }}">
+                        <h2>Matchday {{ loop.index }}</h2>
+                    </div>
+                    {% for video in video_list %}
+                        {{ video_card(video) }}
+                    {% endfor %}
+                {% endfor %}
+            {% else %}
+                {% for video in videos %}
+                    {{ video_card(video) }}
+                {% endfor %}
+            {% endif %}
         </div>
     </div>
 {% endblock %}

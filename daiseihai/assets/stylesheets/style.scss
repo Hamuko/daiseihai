@@ -162,14 +162,28 @@ nav {
     padding: 0 2em;
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
 
     h2, h3 {
         line-height: 1em;
-        margin: 0 0.5em 0 0;
+        margin: 0 0.5em 0.25em 0;
         font-size: 1.5em;
     }
     h3 {
+        @media (max-width: 500px) {
+            font-size: 1.3em;
+        }
         font-weight: 400;
+    }
+
+    .day-selector {
+        width: 100%;
+
+        a {
+            margin: 0 0.25em;
+            text-decoration: none;
+            color: #000;
+        }
     }
 
     &.tournament-info {
