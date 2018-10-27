@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.urls import reverse
 from django.utils.formats import date_format
@@ -19,6 +20,9 @@ def environment(**options) -> Environment:
     env.globals.update({
         'static': staticfiles_storage.url,
         'url': url,
+        'daiseihai': {
+            'release': settings.RAVEN_CONFIG['release'] or ''
+        }
     })
     env.filters['dateformat'] = dateformat
     return env

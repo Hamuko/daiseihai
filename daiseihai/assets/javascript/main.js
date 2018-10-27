@@ -1,3 +1,5 @@
+import setupSentry from './sentry';
+
 var bookmarkContainer;
 var overlayElement;
 var videoContainer;
@@ -66,6 +68,8 @@ function loadVideo(event) {
 
 function ready() {
     // DOM is ready.
+    setupSentry();
+
     document.addEventListener('keydown', keydownHandler, true);
     bookmarkContainer = document.getElementById('bookmarkContainer');
     overlayElement = document.getElementById('videoOverlay');
