@@ -33,6 +33,26 @@ function getBookmarks(videoId) {
     })
 }
 
+function keydownHandler(event) {
+    if (overlayElement.classList.contains('active')) {
+        event.preventDefault();
+        switch (event.key) {
+            case "ArrowDown":
+                videoElement.currentTime -= 60;
+                break;
+            case "ArrowLeft":
+                videoElement.currentTime -= 5;
+                break;
+            case "ArrowRight":
+                videoElement.currentTime += 5;
+                break;
+            case "ArrowUp":
+                videoElement.currentTime += 60;
+                break;
+        }
+    }
+}
+
 function loadVideo(event) {
     event.preventDefault();
     videoElement = document.createElement('video')
@@ -46,6 +66,7 @@ function loadVideo(event) {
 
 function ready() {
     // DOM is ready.
+    document.addEventListener('keydown', keydownHandler, true);
     bookmarkContainer = document.getElementById('bookmarkContainer');
     overlayElement = document.getElementById('videoOverlay');
     overlayElement.addEventListener('click', closeVideo);
