@@ -24,7 +24,7 @@ function getBookmarks(videoId) {
     fetch('/video/' + videoId + '/bookmarks/').then(function(response) {
         return response.json();
     }).then(function(bookmarks) {
-        for (index in bookmarks) {
+        for (const index in bookmarks) {
             var bookmark = bookmarks[index];
             var link = document.createElement('button');
             link.dataset.position = bookmark.position;
