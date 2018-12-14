@@ -15,10 +15,10 @@ export function ready() {
     global.videoElement = document.querySelector('video');
     global.videoElement.addEventListener('loadeddata', resizeChat);
     global.chatContainer = document.getElementById('chatContainer');
-    chatStart = parseInt(global.chatContainer.dataset.start);
-    var chatSrc = global.chatContainer.dataset.src;
-    var metadataSrc = global.chatContainer.dataset.metadata;
-    if (chatStart > 0) {
+    if (global.chatContainer != null) {
+        chatStart = parseInt(global.chatContainer.dataset.start);
+        var chatSrc = global.chatContainer.dataset.src;
+        var metadataSrc = global.chatContainer.dataset.metadata;
         videoLeague = global.chatContainer.dataset.league;
         loadChat(chatSrc, metadataSrc);
         window.addEventListener('resize', resizeChat);
