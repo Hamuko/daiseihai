@@ -107,7 +107,8 @@ class Video(models.Model):
     duration = models.PositiveIntegerField(null=True, blank=True)
     is_visible = models.BooleanField(default=True)
 
-    chat = models.ForeignKey(Chat, related_name='+', on_delete=models.PROTECT, null=True)
+    chat = models.ForeignKey(Chat, related_name='+', on_delete=models.PROTECT,
+                             null=True, blank=True)
     chat_start = models.BigIntegerField(null=True, blank=True)
 
     def __str__(self):
