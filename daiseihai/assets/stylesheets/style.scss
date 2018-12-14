@@ -1,4 +1,5 @@
 @import "normalize";
+@import "teams";
 
 $grid-padding: 1em;
 $card-shadow-blur: 8px;
@@ -18,6 +19,12 @@ html {
 body {
     display: grid;
     grid-template-rows: 6em 1fr;
+    min-height: 100vh;
+
+    &#videoPage {
+        background-color: #1f1f1f;
+        color: #fff;
+    }
 }
 
 header {
@@ -69,6 +76,40 @@ nav {
     border: $box-border;
 }
 
+.chat-message {
+    font-size: 14px;
+    line-height: 20px;
+
+    a {
+        color: cornflowerblue;
+    }
+    .msg {
+        vertical-align: middle;
+        color: rgb(218, 216, 222);
+        word-break: break-word;
+
+        img {
+            max-height: 25px;
+            vertical-align: middle;
+            margin: 0 2px;
+        }
+        &.green {
+            color: #789922;
+        }
+    }
+    .team {
+        display: inline;
+        height: 16px;
+        margin-right: 5px;
+        vertical-align: middle;
+    }
+    .user {
+        font-weight: 700;
+        margin-right: 5px;
+        vertical-align: middle;
+    }
+}
+
 .grid-wrapper {
     display: flex;
     justify-content: center;
@@ -78,6 +119,10 @@ nav {
         width: 100vw;
         padding: 2em;
     }
+}
+
+.content {
+    height: 100%;
 }
 
 .grid {
@@ -311,35 +356,63 @@ nav {
     }
 }
 
-#videoOverlay {
-    align-items: center;
-    background-color: rgba(0, 0, 0, 0.75);
+#chatContainer {
+    flex-direction: column-reverse;
     display: none;
-    height: 100vh;
-    justify-content: center;
-    left: 0;
-    position: fixed;
-    top: 0;
-    width: 100vw;
+    background-color: #2a2a2a;
+    border: 1px solid #000;
+    border-left: 0;
+    border-radius: 0 5px 5px 0;
+    max-height: 500px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding: 4px 8px;
+}
 
-    &.active {
-        display: flex;
-        z-index: 50;
-        flex-direction: column;
+#streamContainer {
+    display: grid;
+    grid-template-rows: 1fr;
+    margin: 10px;
+    grid-template-columns: auto 350px;
+
+    &.has-chat {
+        #bookmarkContainer {
+            grid-column: 1 / 2;
+        }
+
+        #chatContainer {
+            display: flex;
+        }
+
+        #videoContainer {
+            grid-column: 1 / 2;
+
+            video {
+                border-radius: 5px 0 0 5px;
+                width: 100%;
+                height: auto;
+            }
+        }
     }
+}
 
-    div {
-        z-index: 100;
-    }
+#videoContainer {
+    grid-column: 1 / -1;
 
-    video {
-        max-height: 90vh;
-        max-width: 100vw;
+    video {
+        display: block;
+        margin: 0 auto;
+        width: auto;
+        max-width: 90vw;
+        height: 80vh;
         border: 1px solid #000;
     }
 }
 
 #bookmarkContainer {
+    grid-column: 1 / -1;
+    text-align: center;
+
     button {
         background: none;
         border: none;

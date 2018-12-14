@@ -22,7 +22,7 @@
 {%- endmacro %}
 
 {% macro buttons_normal(object) -%}
-    <a href="{{ object.link }}" class="stream-link" data-id="{{ object.id }}">Stream</a>
+    <a href="{{ url('video_detail', pk=object.pk) }}">Stream</a>
     <a href="{{ object.link }}" target="_blank">Download</a>
 {%- endmacro %}
 

@@ -11,6 +11,6 @@ urlpatterns = [
          views.TeamListView.as_view(), name='team_list'),
     path('<slug>/',
          views.TournamentDetailView.as_view(), name='tournament'),
-    path('video/<int:pk>/bookmarks/',
-         views.VideoBookmarkView.as_view(), name='video_bookmarks'),
+    path('video/<int:pk>/',
+         views.VideoView.as_view(), name='video_detail'),
 ]

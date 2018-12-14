@@ -1,0 +1,25 @@
+{% extends "archive/base.html" %}
+
+{% block bodyID %}videoPage{% endblock %}
+
+{% block content %}
+    <div id="streamContainer"{% if object.has_chat %} class="has-chat"{% endif %}>
+        <div id="videoContainer">
+            <video src="{{ object.link }}" autoplay controls></video>
+        </div>
+        {% if object.has_chat %}
+            <div id="chatContainer" data-league="{{ object.tournament.league.slug }}" data-start="{{ object.chat_start }}" data-src="{{ object.chat.url }}" data-metadata="{{ object.tournament.league.metadata_url }}"></div>
+        {% endif %}
+        {% with bookmarks = object.bookmarks.all() %}
+            {% if bookmarks %}
+                <div id="bookmarkContainer">
+                    {% for bookmark in bookmarks %}
+                        <button class="bookmark-button" data-position="{{ bookmark.position.total_seconds() }}">
+                            {{ bookmark.name }}
+                        </button>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+{% endblock %}

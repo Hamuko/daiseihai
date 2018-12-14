@@ -1,11 +1,19 @@
 from urllib.parse import urljoin
 import os.path
+import uuid
 
 from django.conf import settings
 from django.db import models
 
-from daiseihai.fields import ColorField
 from daiseihai.archive import constants
+from daiseihai.fields import ColorField
+from daiseihai.storage import OverwriteStorage
+
+
+def _get_chat_file_path(instance, filename):
+    """Save chat files in `MEDIA_ROOT/chats/UUID4.ext`."""
+    _, extension = os.path.splitext(filename)
+    return f'chats/{instance.id}{extension}'
 
 
 def _get_tournament_logo_path(instance, filename):
@@ -14,12 +22,45 @@ def _get_tournament_logo_path(instance, filename):
     return f'logos/{instance.slug}{extension}'
 
 
+class Chat(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    date = models.DateField()
+    file = models.FileField(storage=OverwriteStorage(),
+                            upload_to=_get_chat_file_path)
+
+    def __str__(self):
+        return f'{self.date} ({self.id})'
+
+    @property
+    def url(self):
+        return self.file.url
+
+    class Meta:
+        ordering = ('-date', )
+
+
+class League(models.Model):
+    name = models.CharField(max_length=200, unique=True)
+    slug = models.SlugField(unique=True)
+
+    @property
+    def metadata_url(self):
+        print(settings.MEDIA_URL)
+        return urljoin(settings.MEDIA_URL, f'metadata/{self.slug}.json')
+
+    def __str__(self):
+        return self.name
+
+
 class Tournament(models.Model):
     name = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
     start_date = models.DateField()
     end_date = models.DateField()
-    logo = models.ImageField(upload_to=_get_tournament_logo_path)
+    logo = models.ImageField(storage=OverwriteStorage(),
+                             upload_to=_get_tournament_logo_path)
+    league = models.ForeignKey(League, related_name='tournaments',
+                               on_delete=models.PROTECT, null=True)
 
     def __str__(self):
         return f'{self.name} ({self.slug})'
@@ -39,7 +80,7 @@ class Team(models.Model):
         return self.name
 
     @property
-    def logo_image(self):
+    def logo_image(self) -> str:
         """Returns the URL for the team's current logo on the wiki."""
         name = self.name.replace('/', '')
         return f'https://implyingrigged.info/wiki/Special:Redirect/file/{name}_logo.png'
@@ -66,8 +107,16 @@ class Video(models.Model):
     duration = models.PositiveIntegerField(null=True, blank=True)
     is_visible = models.BooleanField(default=True)
 
+    chat = models.ForeignKey(Chat, related_name='+', on_delete=models.PROTECT, null=True)
+    chat_start = models.BigIntegerField(null=True, blank=True)
+
     def __str__(self):
         return f'{self.tournament.slug}, {self.date} ({self.order})'
+
+    @property
+    def has_chat(self) -> bool:
+        """Video has an usable chat attached to it."""
+        return self.chat and (self.chat_start or 0) > 0
 
     @property
     def link(self) -> str:

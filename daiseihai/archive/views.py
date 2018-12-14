@@ -1,6 +1,7 @@
 from django.db.models import Count, F, Prefetch, Q, Window
 from django.db.models.functions import RowNumber
-from django.http import Http404, JsonResponse
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView, ListView, View
 from django.views.generic.list import MultipleObjectMixin
 
@@ -63,17 +64,8 @@ class TournamentListView(ListView):
                                  .filter(video_count__gt=0)
 
 
-class VideoBookmarkView(MultipleObjectMixin, View):
-    model = models.VideoBookmark
+class VideoView(DetailView):
+    model = models.Video
 
-    def get(self, request, *args, **kwargs):
-        values = list(map(self.get_bookmark_dict, self.get_queryset()))
-        return JsonResponse(list(values), safe=False)
-
-    @staticmethod
-    def get_bookmark_dict(bookmark):
-        return {'position': bookmark.position.total_seconds(), 'name': bookmark.name}
-
-    def get_queryset(self):
-        pk = self.kwargs.get('pk')
-        return self.model.objects.filter(video_id=pk)
+    def get_object(self, queryset=None):
+        return get_object_or_404(self.model, pk=self.kwargs['pk'])

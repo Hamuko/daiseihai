@@ -11,7 +11,7 @@
     <link rel="shortcut icon" href="{{ static('favicon.png') }}">
     <script src="{{ static('bundle.js') }}?v={{ daiseihai.release }}"></script>
 </head>
-<body>
+<body id="{% block bodyID %}{% endblock %}">
     <header>
         <a href="{{ url('index') }}">
             <h1>Bootleg 4CC</h1>

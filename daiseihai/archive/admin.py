@@ -16,6 +16,8 @@ class VideoAdmin(admin.ModelAdmin):
     exclude = ('duration', )
 
 
+admin.site.register(models.Chat)
+admin.site.register(models.League)
 admin.site.register(models.Team)
 admin.site.register(models.Tournament)
 admin.site.register(models.Video, VideoAdmin)
