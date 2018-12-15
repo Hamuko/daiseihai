@@ -54,6 +54,9 @@ function createMessage(line) {
     var container = document.createElement('div');
     container.classList.add('chat-message');
 
+    var userInfoContainer = document.createElement('div');
+    userInfoContainer.classList.add('user-info');
+
     var icon = document.createElement('img')
     icon.classList.add('team');
     let teamSrc = metadata.teams[line[1]];
@@ -61,7 +64,7 @@ function createMessage(line) {
         teamSrc = metadata.teams['NULL'];
     }
     icon.src = teamSrc;
-    container.appendChild(icon);
+    userInfoContainer.appendChild(icon);
 
     var user = document.createElement('span');
     user.classList.add('user');
@@ -71,7 +74,8 @@ function createMessage(line) {
     }
     user.classList.add(teamClass.join('-'));
     user.textContent = line[2] + ':';
-    container.appendChild(user);
+    userInfoContainer.appendChild(user);
+    container.appendChild(userInfoContainer);
 
     var msg = document.createElement('span');
     msg.classList.add('msg');
