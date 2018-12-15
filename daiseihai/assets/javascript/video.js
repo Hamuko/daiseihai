@@ -2,12 +2,13 @@ import Papa from 'papaparse';
 
 var chatData = [];
 var chatIndex = 0;
+var chatLastUpdate = 0;
 var chatStart = 0;
+var metadata = {};
 var previousTime = 0;
 var seeking = true;
 var updatingChat = false;
 var videoLeague = '';
-var metadata = {};
 
 const emoteRe = /(?:^|\s):([A-Za-z0-9]+?):(?!\S)/g;
 const MAX_MESSAGES_NUM = 60;
@@ -120,7 +121,7 @@ function loadChat(chatSrc, metadataSrc) {
                 }
             }
             chatData = chatData.slice(startIndex + 1);
-            global.videoElement.addEventListener('timeupdate', function() {
+            global.videoElement.addEventListener('playing', function() {
                 window.requestAnimationFrame(updateChat);
             });
         }
@@ -164,6 +165,10 @@ function updateChat() {
     if (updatingChat) {
         return;
     }
+    if (Date.now() - chatLastUpdate < 40) {
+        window.requestAnimationFrame(updateChat);
+        return;
+    }
     updatingChat = true;
 
     var time = Math.floor(global.videoElement.currentTime * 1000);
@@ -203,4 +208,8 @@ function updateChat() {
     previousTime = time;
 
     updatingChat = false;
+    chatLastUpdate = Date.now();
+    if (!global.videoElement.paused) {
+        window.requestAnimationFrame(updateChat);
+    }
 }
