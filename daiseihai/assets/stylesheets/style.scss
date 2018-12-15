@@ -83,13 +83,16 @@ nav {
     a {
         color: cornflowerblue;
     }
+    .emote {
+        max-height: 25px;
+    }
     .msg {
         vertical-align: middle;
         color: rgb(218, 216, 222);
         word-break: break-word;
 
         img {
-            max-height: 25px;
+            max-width: 200px;
             vertical-align: middle;
             margin: 0 2px;
         }

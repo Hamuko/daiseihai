@@ -81,6 +81,7 @@ function createMessage(line) {
         let emoteSrc = metadata.emotes[emoteMatch[1]];
         if (emoteSrc !== undefined) {
             let emote = document.createElement('img');
+            emote.classList.add('emote');
             emote.src = emoteSrc;
             line[3] = line[3].replace(emoteMatch[0], emote.outerHTML);
         }
