@@ -8,8 +8,9 @@ var seeking = true;
 var updatingChat = false;
 var videoLeague = '';
 var metadata = {};
-const emoteRe = /(?:^|\s):([A-Za-z0-9]+?):(?!\S)/g;
 
+const emoteRe = /(?:^|\s):([A-Za-z0-9]+?):(?!\S)/g;
+const MAX_MESSAGES_NUM = 60;
 
 export function ready() {
     global.videoElement = document.querySelector('video');
@@ -148,7 +149,7 @@ function keydownHandler(event) {
 }
 
 function refreshChatWindow() {
-    while (global.chatContainer.childElementCount > 50) {
+    while (global.chatContainer.childElementCount > MAX_MESSAGES_NUM) {
         global.chatContainer.removeChild(global.chatContainer.lastChild);
     }
 }
@@ -190,9 +191,9 @@ function updateChat() {
         }
     }
 
-    // Draw last 50 captured chat messages.
+    // Draw last MAX_MESSAGES_NUM captured chat messages.
     if (messages.length > 0) {
-        messages = messages.slice(-50);
+        messages = messages.slice(-MAX_MESSAGES_NUM);
         for (var i = 0; i < messages.length; i++) {
             createMessage(messages[i]);
         }
