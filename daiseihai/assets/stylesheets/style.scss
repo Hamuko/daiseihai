@@ -342,6 +342,17 @@ nav {
             }
         }
 
+        .matchup-block {
+            &:hover > div {
+                transition: background-color 2s, color 2s;
+            }
+
+            &.spoiler:not(:hover) > div {
+                background-color: black !important;
+                color: black !important;
+            }
+        }
+
         .video-header {
             display: flex;
             justify-content: space-between;

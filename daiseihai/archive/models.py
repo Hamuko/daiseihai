@@ -136,6 +136,7 @@ class Matchup(models.Model):
     home = models.ForeignKey(Team, related_name='home_games', on_delete=models.CASCADE)
     away = models.ForeignKey(Team, related_name='away_games', on_delete=models.CASCADE)
     order = models.PositiveSmallIntegerField(default=1)
+    spoiler = models.BooleanField(default=False)
 
     class Meta:
         ordering = ('order', )

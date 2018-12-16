@@ -48,7 +48,7 @@
 {% macro matchup_normal(matchups) -%}
     <div class="matchups">
         {% for matchup in matchups %}
-            <div>
+            <div class="matchup-block{% if matchup.spoiler %} spoiler{% endif %}">
                 <div {% if matchup.home.long_name %}class="small"{% endif %} style="{{ matchup.home.style }}">
                     <a class="block-link" href="{{ url('team_detail', slug=matchup.home.slug) }}"></a>
                     {{ matchup.home }}
