@@ -140,7 +140,7 @@ class Matchup(models.Model):
 
     class Meta:
         ordering = ('order', )
-        unique_together = [('video', 'order')]
+        unique_together = ('video', 'order')
 
 
 class VideoBookmark(models.Model):
