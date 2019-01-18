@@ -131,6 +131,9 @@ function loadChat(chatSrc, metadataSrc) {
             global.videoElement.addEventListener('playing', function() {
                 window.requestAnimationFrame(updateChat);
             });
+            if (!global.videoElement.paused) {
+                window.requestAnimationFrame(updateChat);
+            }
         }
     });
 }
@@ -223,7 +226,9 @@ function updateChat() {
 
 function videoLoaded() {
     resizeChat();
-    var chatSrc = global.chatContainer.dataset.src;
-    var metadataSrc = global.chatContainer.dataset.metadata;
-    loadChat(chatSrc, metadataSrc);
+    if (global.chatContainer != null) {
+        var chatSrc = global.chatContainer.dataset.src;
+        var metadataSrc = global.chatContainer.dataset.metadata;
+        loadChat(chatSrc, metadataSrc);
+    }
 }
