@@ -106,3 +106,5 @@ RAVEN_CONFIG = {
     'dsn': '',
     'release': raven.fetch_git_sha(os.path.abspath(os.curdir)),
 }
+
+FILE_UPLOAD_PERMISSIONS = 0o644
