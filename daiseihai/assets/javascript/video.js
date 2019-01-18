@@ -15,14 +15,11 @@ const MAX_MESSAGES_NUM = 60;
 
 export function ready() {
     global.videoElement = document.querySelector('video');
-    global.videoElement.addEventListener('loadeddata', resizeChat);
+    global.videoElement.addEventListener('loadeddata', videoLoaded);
     global.chatContainer = document.getElementById('chatContainer');
     if (global.chatContainer != null) {
         chatStart = parseInt(global.chatContainer.dataset.start);
-        var chatSrc = global.chatContainer.dataset.src;
-        var metadataSrc = global.chatContainer.dataset.metadata;
         videoLeague = global.chatContainer.dataset.league;
-        loadChat(chatSrc, metadataSrc);
         window.addEventListener('resize', resizeChat);
     }
 
@@ -118,13 +115,19 @@ function loadChat(chatSrc, metadataSrc) {
         complete: function(results, file) {
             chatData = results.data;
             var startIndex = 0;
+            var endIndex = chatData.length + 1;
+            var duration = Math.floor(window.videoElement.duration * 1000);
             for (var i = 0; i < chatData.length; i++) {
                 chatData[i][0] = parseInt(chatData[i][0]) - chatStart;
                 if (chatData[i][0] < 0) {
                     startIndex = i;
+                } else if (chatData[i][0] > duration) {
+                    endIndex = i;
+                    break;
                 }
             }
-            chatData = chatData.slice(startIndex + 1);
+            chatData = chatData.slice(startIndex + 1, endIndex);
+            console.info(`Loaded ${chatData.length} chat messages.`)
             global.videoElement.addEventListener('playing', function() {
                 window.requestAnimationFrame(updateChat);
             });
@@ -216,4 +219,11 @@ function updateChat() {
     if (!global.videoElement.paused) {
         window.requestAnimationFrame(updateChat);
     }
+}
+
+function videoLoaded() {
+    resizeChat();
+    var chatSrc = global.chatContainer.dataset.src;
+    var metadataSrc = global.chatContainer.dataset.metadata;
+    loadChat(chatSrc, metadataSrc);
 }
