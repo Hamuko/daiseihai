@@ -159,6 +159,22 @@ function keydownHandler(event) {
     }
 }
 
+function seekToInitial() {
+    const urlParams = new URLSearchParams(window.location.search);
+    var time = urlParams.get('t');
+    if (time == null) {
+        return;
+    }
+    time = time.split(':');
+
+    var totalSeconds = 0;
+    for (var i = 0; i < time.length; i++) {
+        totalSeconds *= 60;
+        totalSeconds += parseFloat(time[i]);
+    }
+    global.videoElement.currentTime = totalSeconds;
+}
+
 function refreshChatWindow() {
     while (global.chatContainer.childElementCount > MAX_MESSAGES_NUM) {
         global.chatContainer.removeChild(global.chatContainer.lastChild);
@@ -166,9 +182,7 @@ function refreshChatWindow() {
 }
 
 function resizeChat() {
-    if (global.chatContainer != null) {
-        global.chatContainer.style.maxHeight = global.videoElement.offsetHeight + 'px';
-    }
+    global.chatContainer.style.maxHeight = global.videoElement.offsetHeight + 'px';
 }
 
 function updateChat() {
@@ -225,8 +239,9 @@ function updateChat() {
 }
 
 function videoLoaded() {
-    resizeChat();
+    seekToInitial();
     if (global.chatContainer != null) {
+        resizeChat();
         var chatSrc = global.chatContainer.dataset.src;
         var metadataSrc = global.chatContainer.dataset.metadata;
         loadChat(chatSrc, metadataSrc);
