@@ -173,6 +173,7 @@ function seekToInitial() {
         totalSeconds += parseFloat(time[i]);
     }
     global.videoElement.currentTime = totalSeconds;
+    global.videoElement.play();
 }
 
 function refreshChatWindow() {
