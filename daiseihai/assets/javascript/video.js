@@ -100,13 +100,14 @@ function loadChat(chatSrc, metadataSrc) {
     if (global.videoElement == null) {
         return;
     }
-    fetch(metadataSrc).then(function(response) {
+    var metadataLoaded = fetch(metadataSrc).then(function(response) {
         if (response.status !== 200) {
             console.error('Unable to fetch chat metadata.');
             return;
         }
         response.json().then(function(data) {
             metadata = data;
+            console.info(`Loaded chat metadata.`)
         });
     });
     Papa.parse(chatSrc, {
@@ -128,12 +129,15 @@ function loadChat(chatSrc, metadataSrc) {
             }
             chatData = chatData.slice(startIndex + 1, endIndex);
             console.info(`Loaded ${chatData.length} chat messages.`)
-            global.videoElement.addEventListener('playing', function() {
-                window.requestAnimationFrame(updateChat);
+            metadataLoaded.then(function() {
+                global.videoElement.addEventListener('playing', function() {
+                    window.requestAnimationFrame(updateChat);
+                });
+
+                if (!global.videoElement.paused) {
+                    window.requestAnimationFrame(updateChat);
+                }
             });
-            if (!global.videoElement.paused) {
-                window.requestAnimationFrame(updateChat);
-            }
         }
     });
 }
