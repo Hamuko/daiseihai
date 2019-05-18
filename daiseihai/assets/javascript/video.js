@@ -29,6 +29,7 @@ export function ready() {
     for (var i = 0; i < bookmarkButtons.length; i++) {
         bookmarkButtons[i].addEventListener('click', bookmarkSeek);
     }
+    window.addEventListener('popstate', setTimeFromHistory, false);
 }
 
 
@@ -37,6 +38,7 @@ function bookmarkSeek(event) {
         return;
     }
     global.videoElement.currentTime = this.dataset.position;
+    setURL(this.dataset.position);
 }
 
 
@@ -94,6 +96,28 @@ function createMessage(line) {
 
     global.chatContainer.prepend(container);
 }
+
+
+function formatSeconds(secondString) {
+    var components = [];
+    var time = parseFloat(secondString);
+    var hours = Math.floor(time / 3600);
+    time -= hours * 3600;
+    if (hours > 0) {
+        components.push(hours.toString());
+    }
+    var minutes = Math.floor(time / 60);
+    time -= minutes * 60;
+    if (minutes > 0) {
+        components.push(minutes.toString().padStart(2, '0'));
+    }
+    var seconds = Math.floor(time);
+    time -= seconds;
+    components.push(seconds.toString().padStart(2, '0'));
+    var milliseconds = Math.round(time * 1000).toString();
+    return [components.join(':'), milliseconds].join('.');
+}
+
 
 
 function loadChat(chatSrc, metadataSrc) {
@@ -178,6 +202,22 @@ function seekToInitial() {
     }
     global.videoElement.currentTime = totalSeconds;
 }
+
+
+function setURL(time) {
+    var url = new URL('', window.location.href);
+    url.searchParams.set('t', formatSeconds(time));
+    history.pushState({'time': time}, document.title, url.toString().replace(/%3A/g, ":"));
+}
+
+
+function setTimeFromHistory(event) {
+    if (global.videoElement == null) {
+        return;
+    }
+    global.videoElement.currentTime = history.state ? history.state.time : 0;
+}
+
 
 function refreshChatWindow() {
     while (global.chatContainer.childElementCount > MAX_MESSAGES_NUM) {
