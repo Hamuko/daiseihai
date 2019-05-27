@@ -167,7 +167,7 @@ function loadChat(chatSrc, metadataSrc) {
 }
 
 function keydownHandler(event) {
-    switch (event.key) {
+    switch (event.code) {
         case "ArrowDown":
             event.preventDefault();
             global.videoElement.currentTime -= 60;
@@ -183,6 +183,10 @@ function keydownHandler(event) {
         case "ArrowUp":
             event.preventDefault();
             global.videoElement.currentTime += 60;
+            break;
+        case "Space":
+            event.preventDefault();
+            togglePlayback();
             break;
     }
 }
@@ -216,6 +220,14 @@ function setTimeFromHistory(event) {
         return;
     }
     global.videoElement.currentTime = history.state ? history.state.time : 0;
+}
+
+function togglePlayback() {
+    if (global.videoElement.paused) {
+        global.videoElement.play();
+    } else {
+        global.videoElement.pause();
+    }
 }
 
 
