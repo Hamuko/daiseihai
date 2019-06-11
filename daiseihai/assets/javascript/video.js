@@ -238,7 +238,16 @@ function refreshChatWindow() {
 }
 
 function resizeChat() {
-    global.chatContainer.style.maxHeight = global.videoElement.offsetHeight + 'px';
+    let isPortraitMode = window.matchMedia('(max-width: 768px) and (orientation: portrait)').matches;
+    if (isPortraitMode) {
+        let documentHeight = document.documentElement.clientHeight;
+        let videoHeight = global.videoElement.clientHeight;
+        var chatHeight = documentHeight - videoHeight - 10;
+    } else {
+        var chatHeight = global.videoElement.offsetHeight;
+    }
+    global.chatContainer.style.height = chatHeight + 'px';
+    global.chatContainer.style.maxHeight = chatHeight + 'px';
 }
 
 function updateChat() {
