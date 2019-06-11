@@ -446,6 +446,8 @@ nav {
 
         @include portrait-video {
             max-width: initial;
+            border-right: 0;
+            border-left: 0;
         }
     }
 }
