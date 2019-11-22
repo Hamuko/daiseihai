@@ -1,8 +1,11 @@
+import datetime
+
 from django.db.models import Count, F, Prefetch, Q, Window
 from django.db.models.functions import RowNumber
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-from django.views.generic import DetailView, ListView, View
+from django.urls import reverse
+from django.views.generic import DetailView, ListView, RedirectView, View
 from django.views.generic.list import MultipleObjectMixin
 
 from daiseihai.archive import models
@@ -64,8 +67,32 @@ class TournamentListView(ListView):
                                  .filter(video_count__gt=0)
 
 
+class LegacyVideoRedirectView(RedirectView):
+    """Conversion view for old video page URLs."""
+
+    query_string = True
+    pattern_name = "video_detail"
+
+    def get_redirect_url(self, *args, **kwargs):
+        video = get_object_or_404(
+            models.Video.objects.select_related("tournament"), pk=kwargs.pop("pk")
+        )
+        kwargs.update(slug=video.tournament.slug, date=video.date.isoformat())
+        same_day_videos = models.Video.objects.filter(
+            tournament=video.tournament, date=video.date
+        )
+        if video.order != 1 or same_day_videos.count() > 1:
+            kwargs["order"] = video.order
+            self.pattern_name = "video_detail_order"
+        return super().get_redirect_url(*args, **kwargs)
+
+
 class VideoView(DetailView):
     model = models.Video
 
     def get_object(self, queryset=None):
-        return get_object_or_404(self.model, pk=self.kwargs['pk'])
+        date = datetime.date.fromisoformat(self.kwargs["date"])
+        order = int(self.kwargs.get("order", 1))
+        return get_object_or_404(
+            self.model, date=date, order=order, tournament__slug=self.kwargs["slug"]
+        )

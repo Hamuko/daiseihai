@@ -22,8 +22,15 @@
 {%- endmacro %}
 
 {% macro buttons_normal(object) -%}
-    <a href="{{ url('video_detail', pk=object.pk) }}">Stream</a>
-    <a href="{{ object.link }}" target="_blank">Download</a>
+    {% if object.order == 1 and object.part_count == 1 %}
+        <a href="{{ url('video_detail', slug=object.tournament.slug, date=object.date.isoformat()) }}">
+            Watch
+        </a>
+    {% else %}
+        <a href="{{ url('video_detail_order', slug=object.tournament.slug, date=object.date.isoformat(), order=object.order) }}">
+            Watch
+        </a>
+    {% endif %}
 {%- endmacro %}
 
 {% macro buttons_single(object) -%}

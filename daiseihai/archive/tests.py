@@ -112,11 +112,51 @@ class TournamentTestCase(TestCase):
         self.assertNotContains(response, tournament4.name)
 
 
+class LegacyVideoURLRedirectTestCase(TestCase):
+    def test_only(self):
+        video = factories.VideoFactory(
+            tournament__slug="tourney", date=date(2019, 12, 6), order=1
+        )
+        response = self.client.get("/video/%s/" % video.pk)
+        self.assertRedirects(response, "/video/tourney/2019-12-06/")
+
+    def test_ordered_first(self):
+        tournament = factories.TournamentFactory(slug="tourney")
+        video = factories.VideoFactory(
+            tournament=tournament, date=date(2019, 12, 6), order=1
+        )
+        factories.VideoFactory(
+            tournament=tournament, date=date(2019, 12, 6), order=2
+        )
+        response = self.client.get("/video/%s/" % video.pk)
+        self.assertRedirects(response, "/video/tourney/2019-12-06/1/")
+
+    def test_ordered_second(self):
+        tournament = factories.TournamentFactory(slug="tourney")
+        factories.VideoFactory(
+            tournament=tournament, date=date(2019, 12, 6), order=1
+        )
+        video = factories.VideoFactory(
+            tournament=tournament, date=date(2019, 12, 6), order=2
+        )
+        response = self.client.get("/video/%s/" % video.pk)
+        self.assertRedirects(response, "/video/tourney/2019-12-06/2/")
+
+    def test_query_string(self):
+        video = factories.VideoFactory(
+            tournament__slug="tourney", date=date(2019, 12, 6), order=1
+        )
+        response = self.client.get("/video/%s/?t=1234.567" % video.pk)
+        self.assertRedirects(response, "/video/tourney/2019-12-06/?t=1234.567")
+
+
 class VideoTestCase(TestCase):
     def test_video(self):
-        video = factories.VideoFactory()
+        factories.VideoFactory(
+            tournament__slug="xxx", date=date(2018, 11, 21), order=2
+        )
 
-        response = self.client.get("/video/%s/" % video.pk)
+        response = self.client.get("/video/xxx/2018-11-21/2/")
         self.assertEqual(response.status_code, 200)
 
         self.assertNotContains(response, "bookmark-button")
@@ -124,10 +164,14 @@ class VideoTestCase(TestCase):
 
     def test_video_with_all(self):
         league = factories.LeagueFactory(slug="y-league")
-        tournament = factories.TournamentFactory(league=league)
+        tournament = factories.TournamentFactory(league=league, slug="xyz")
         chat = factories.ChatFactory()
         video = factories.VideoFactory(
-            tournament=tournament, chat=chat, chat_start=1574442201656
+            tournament=tournament,
+            date=date(2019, 11, 22),
+            order=1,
+            chat=chat,
+            chat_start=1574442201656,
         )
         factories.VideoBookmarkFactory(
             video=video,
@@ -140,7 +184,7 @@ class VideoTestCase(TestCase):
             position=timedelta(hours=1, minutes=28, seconds=13),
         )
 
-        response = self.client.get("/video/%s/" % video.pk)
+        response = self.client.get("/video/xyz/2019-11-22/")
         self.assertEqual(response.status_code, 200)
 
         self.assertContains(response, "bookmark-button", 2)
@@ -155,7 +199,9 @@ class VideoTestCase(TestCase):
         self.assertContains(response, 'data-metadata="/media/metadata/y-league.json"')
 
     def test_video_with_bookmarks(self):
-        video = factories.VideoFactory()
+        video = factories.VideoFactory(
+            tournament__slug="test-slug", date=date(2019, 1, 1), order=5
+        )
         factories.VideoBookmarkFactory(
             video=video,
             name="Bookmark A",
@@ -167,7 +213,7 @@ class VideoTestCase(TestCase):
             position=timedelta(hours=1, minutes=28, seconds=13, milliseconds=133),
         )
 
-        response = self.client.get("/video/%s/" % video.pk)
+        response = self.client.get("/video/test-slug/2019-01-01/5/")
         self.assertEqual(response.status_code, 200)
 
         self.assertContains(response, "bookmark-button", 2)
@@ -179,13 +225,17 @@ class VideoTestCase(TestCase):
 
     def test_video_with_chat(self):
         league = factories.LeagueFactory(slug="x-league")
-        tournament = factories.TournamentFactory(league=league)
+        tournament = factories.TournamentFactory(league=league, slug="x")
         chat = factories.ChatFactory()
-        video = factories.VideoFactory(
-            tournament=tournament, chat=chat, chat_start=1574448973245
+        factories.VideoFactory(
+            tournament=tournament,
+            date=date(2000, 1, 31),
+            order=15,
+            chat=chat,
+            chat_start=1574448973245
         )
 
-        response = self.client.get("/video/%s/" % video.pk)
+        response = self.client.get("/video/x/2000-01-31/15/")
         self.assertEqual(response.status_code, 200)
 
         self.assertNotContains(response, "bookmark-button")
