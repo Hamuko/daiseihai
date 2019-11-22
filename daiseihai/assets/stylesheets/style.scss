@@ -59,6 +59,14 @@ header {
         margin: 0;
     }
 }
+.padoru {
+    display: flex;
+
+    img {
+        height: 46px;
+        margin-left: 10px;
+    }
+}
 
 nav {
     font-weight: 500;
