@@ -45,7 +45,6 @@ class League(models.Model):
 
     @property
     def metadata_url(self):
-        print(settings.MEDIA_URL)
         return urljoin(settings.MEDIA_URL, f'metadata/{self.slug}.json')
 
     def __str__(self):

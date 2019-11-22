@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 
 from django.test import TestCase
 
@@ -110,3 +110,87 @@ class TournamentTestCase(TestCase):
         self.assertContains(response, '1 video')
         self.assertNotContains(response, tournament3.name)
         self.assertNotContains(response, tournament4.name)
+
+
+class VideoTestCase(TestCase):
+    def test_video(self):
+        video = factories.VideoFactory()
+
+        response = self.client.get("/video/%s/" % video.pk)
+        self.assertEqual(response.status_code, 200)
+
+        self.assertNotContains(response, "bookmark-button")
+        self.assertNotContains(response, "chatContainer")
+
+    def test_video_with_all(self):
+        league = factories.LeagueFactory(slug="y-league")
+        tournament = factories.TournamentFactory(league=league)
+        chat = factories.ChatFactory()
+        video = factories.VideoFactory(
+            tournament=tournament, chat=chat, chat_start=1574442201656
+        )
+        factories.VideoBookmarkFactory(
+            video=video,
+            name="Bookmark A",
+            position=timedelta(minutes=12, milliseconds=760),
+        )
+        factories.VideoBookmarkFactory(
+            video=video,
+            name="Bookmark B",
+            position=timedelta(hours=1, minutes=28, seconds=13),
+        )
+
+        response = self.client.get("/video/%s/" % video.pk)
+        self.assertEqual(response.status_code, 200)
+
+        self.assertContains(response, "bookmark-button", 2)
+        self.assertContains(response, "Bookmark A")
+        self.assertContains(response, "Bookmark B")
+        self.assertContains(response, 'data-position="720.76"')
+        self.assertContains(response, 'data-position="5293.0"')
+        self.assertContains(response, "chatContainer")
+        self.assertContains(response, 'data-league="y-league"')
+        self.assertContains(response, 'data-start="1574442201656"')
+        self.assertContains(response, f'data-src="/media/chats/{chat.pk}.txt"')
+        self.assertContains(response, 'data-metadata="/media/metadata/y-league.json"')
+
+    def test_video_with_bookmarks(self):
+        video = factories.VideoFactory()
+        factories.VideoBookmarkFactory(
+            video=video,
+            name="Bookmark A",
+            position=timedelta(minutes=2, milliseconds=760),
+        )
+        factories.VideoBookmarkFactory(
+            video=video,
+            name="Bookmark B",
+            position=timedelta(hours=1, minutes=28, seconds=13, milliseconds=133),
+        )
+
+        response = self.client.get("/video/%s/" % video.pk)
+        self.assertEqual(response.status_code, 200)
+
+        self.assertContains(response, "bookmark-button", 2)
+        self.assertContains(response, "Bookmark A")
+        self.assertContains(response, "Bookmark B")
+        self.assertContains(response, 'data-position="120.76"')
+        self.assertContains(response, 'data-position="5293.133"')
+        self.assertNotContains(response, "chatContainer")
+
+    def test_video_with_chat(self):
+        league = factories.LeagueFactory(slug="x-league")
+        tournament = factories.TournamentFactory(league=league)
+        chat = factories.ChatFactory()
+        video = factories.VideoFactory(
+            tournament=tournament, chat=chat, chat_start=1574448973245
+        )
+
+        response = self.client.get("/video/%s/" % video.pk)
+        self.assertEqual(response.status_code, 200)
+
+        self.assertNotContains(response, "bookmark-button")
+        self.assertContains(response, "chatContainer")
+        self.assertContains(response, 'data-league="x-league"')
+        self.assertContains(response, 'data-start="1574448973245"')
+        self.assertContains(response, f'data-src="/media/chats/{chat.pk}.txt"')
+        self.assertContains(response, 'data-metadata="/media/metadata/x-league.json"')

@@ -1,7 +1,24 @@
 import datetime
 import factory
+from django.utils import timezone
 
 from daiseihai.archive import models
+
+
+class ChatFactory(factory.DjangoModelFactory):
+    date = timezone.now().date()
+    file = factory.django.FileField(filename='chat.txt')
+
+    class Meta:
+        model = models.Chat
+
+
+class LeagueFactory(factory.DjangoModelFactory):
+    name = factory.Sequence(lambda n: 'League {0}'.format(n + 1))
+    slug = factory.Sequence(lambda n: 'league-{0}'.format(n + 1))
+
+    class Meta:
+        model = models.League
 
 
 class TournamentFactory(factory.DjangoModelFactory):
@@ -10,6 +27,7 @@ class TournamentFactory(factory.DjangoModelFactory):
     start_date = factory.Sequence(lambda n: datetime.date(n + 2000, 7, 27))
     end_date = factory.Sequence(lambda n: datetime.date(n + 2000, 8, 12))
     logo = factory.django.ImageField(filename='tournament.png')
+    league = factory.SubFactory(LeagueFactory)
 
     class Meta:
         model = models.Tournament
@@ -51,7 +69,7 @@ class MatchupFactory(factory.DjangoModelFactory):
 
 class VideoBookmarkFactory(factory.DjangoModelFactory):
     video = factory.SubFactory(VideoFactory)
-    position = '0'
+    position = datetime.timedelta(seconds=0)
     name = '/a/ - /ck/'
 
     class Meta:
