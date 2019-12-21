@@ -1,8 +1,9 @@
 from datetime import date, timedelta
 
 from django.test import TestCase
+from django.urls import reverse
 
-from daiseihai.archive import constants, factories
+from daiseihai.archive import constants, factories, models
 
 
 class TournamentTestCase(TestCase):
@@ -244,3 +245,73 @@ class VideoTestCase(TestCase):
         self.assertContains(response, 'data-start="1574448973245"')
         self.assertContains(response, f'data-src="/media/chats/{chat.pk}.txt"')
         self.assertContains(response, 'data-metadata="/media/metadata/x-league.json"')
+
+
+class VideoAdminTestCase(TestCase):
+    def setUp(self):
+        self.user = factories.UserFactory(is_superuser=True, is_staff=True)
+        self.client.force_login(user=self.user)
+
+        tournament = factories.TournamentFactory()
+        chat = factories.ChatFactory()
+        self.data = {
+            'type': 1,
+            'tournament': tournament.pk,
+            'date': '2019-12-21',
+            'order': 1,
+            'filename': '4cc20191221.mp4',
+            'is_visible': True,
+            'chat': chat.pk,
+            'matchups-TOTAL_FORMS': 0,
+            'matchups-INITIAL_FORMS': 0,
+            'matchups-MIN_NUM_FORMS': 0,
+            'matchups-MAX_NUM_FORMS': 1000,
+            'bookmarks-TOTAL_FORMS': 0,
+            'bookmarks-INITIAL_FORMS': 0,
+            'bookmarks-MIN_NUM_FORMS': 0,
+            'bookmarks-MAX_NUM_FORMS': 1000,
+        }
+        
+
+    def _create_video(self):
+        response = self.client.post(reverse('admin:archive_video_add'), self.data)
+        self.assertRedirects(response, reverse('admin:archive_video_changelist'))
+        return models.Video.objects.last()
+
+    def test_chat_timestamp(self):
+        self.data.update({
+            'chat_start': 1576861555677,
+        })
+        video = self._create_video()
+        self.assertEqual(video.chat_start, 1576861555677)
+
+    def test_chat_sync_help(self):
+        self.data.update({
+            'sync_help_chat_timestamp': 1576949556379,
+            'sync_help_video_timestamp': '00:19:19.001',
+        })
+        video = self._create_video()
+        self.assertEqual(video.chat_start, 1576948397378)
+
+    def test_chat_sync_help_missing_chat(self):
+        self.data.update({
+            'sync_help_video_timestamp': '00:19:19.001',
+        })
+        video = self._create_video()
+        self.assertIsNone(video.chat_start)
+
+    def test_chat_sync_help_missing_video(self):
+        self.data.update({
+            'sync_help_chat_timestamp': 1576949556379,
+        })
+        video = self._create_video()
+        self.assertIsNone(video.chat_start)
+
+    def test_chat_timestamp_and_sync_help(self):
+        self.data.update({
+            'chat_start': 1576861555677,
+            'sync_help_chat_timestamp': 1576949556379,
+            'sync_help_video_timestamp': '00:19:19.001',
+        })
+        video = self._create_video()
+        self.assertEqual(video.chat_start, 1576861555677)

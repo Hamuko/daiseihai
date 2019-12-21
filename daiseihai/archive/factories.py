@@ -1,8 +1,18 @@
 import datetime
+
 import factory
+from django.conf import settings
 from django.utils import timezone
 
 from daiseihai.archive import models
+
+
+class UserFactory(factory.DjangoModelFactory):
+    username = factory.Sequence(lambda n: 'user_{0}'.format(n + 1))
+    email = factory.Sequence(lambda n: 'user_{0}@example.com'.format(n + 1))
+
+    class Meta:
+        model = settings.AUTH_USER_MODEL
 
 
 class ChatFactory(factory.DjangoModelFactory):

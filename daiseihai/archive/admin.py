@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from daiseihai.archive import models
+from daiseihai.archive import forms, models
 
 
 class MatchupInline(admin.TabularInline):
@@ -12,8 +12,21 @@ class VideoBookmarkInline(admin.TabularInline):
 
 
 class VideoAdmin(admin.ModelAdmin):
-    inlines = [MatchupInline, VideoBookmarkInline]
-    exclude = ('duration', )
+    inlines = [MatchupInline, VideoBookmarkInline]  
+    form = forms.VideoForm
+    fieldsets = (
+        (None, {
+            'fields': (
+                'type',
+                'tournament',
+                ('date', 'order'),
+                ('filename', 'url', 'intro_url'),
+                'is_visible',
+                'chat',
+                ('chat_start', 'sync_help_video_timestamp', 'sync_help_chat_timestamp'),
+            )
+        }),
+    )
 
 
 admin.site.register(models.Chat)
