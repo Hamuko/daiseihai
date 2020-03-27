@@ -24,7 +24,7 @@ html {
 
 body {
     display: grid;
-    grid-template-rows: 6em 1fr;
+    grid-template-rows: auto 1fr;
     min-height: 100vh;
 
     &#videoPage {
@@ -37,7 +37,7 @@ header {
     align-items: center;
     display: flex;
     justify-content: space-between;
-    padding: 0 2em;
+    padding: 1em 2em;
     text-transform: uppercase;
 
     a {
