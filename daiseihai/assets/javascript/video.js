@@ -50,6 +50,10 @@ function clearChat() {
 
 
 function createMessage(line) {
+    if (line[2] == "Blinkyy") {
+        return;
+    }
+
     var container = document.createElement('div');
     container.classList.add('chat-message');
 
