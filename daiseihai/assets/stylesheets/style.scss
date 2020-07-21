@@ -6,6 +6,7 @@ $card-shadow-blur: 8px;
 $card-shadow-color: rgba(0, 0, 0, 0.2);
 $box-border: 1px solid #c8c8c8;
 $matchup-grid-gap: 5px;
+$chat-background-color: #2a2a2a;
 
 @mixin portrait-video {
   @media (max-width: 768px) and (orientation: portrait) {
@@ -391,28 +392,24 @@ nav {
 #chatContainer {
     flex-direction: column-reverse;
     display: none;
-    background-color: #2a2a2a;
-    border: 1px solid #000;
-    border-left: 0;
-    border-radius: 0 5px 5px 0;
-    max-height: 500px;
+    background-color: $chat-background-color;
     overflow-x: hidden;
     overflow-y: scroll;
     padding: 4px 8px;
 
     @include portrait-video {
-        border-left: 1px;
-        border-radius: initial;
-        border-top: 0px;
         overflow-y: hidden;
     }
 }
 
 #streamContainer {
+    background-color: #000;
     display: grid;
-    grid-template-rows: 1fr;
-    margin: 10px;
+    grid-gap: 1px;
     grid-template-columns: auto 350px;
+    grid-template-rows: 2fr;
+    margin: 10px;
+    border: 1px solid #000;
 
     @include portrait-video {
         grid-template-columns: auto;
@@ -421,6 +418,10 @@ nav {
     }
 
     &.has-chat {
+        #bookmarkContainer {
+            grid-column: 1 / 2;
+        }
+
         #chatContainer {
             display: flex;
         }
@@ -429,13 +430,8 @@ nav {
             grid-column: 1 / 2;
 
             video {
-                border-radius: 5px 0 0 5px;
                 width: 100%;
                 height: auto;
-
-                @include portrait-video {
-                    border-radius: initial;
-                }
             }
         }
     }
@@ -448,19 +444,18 @@ nav {
         display: block;
         margin: 0 auto;
         width: auto;
-        max-width: 90vw;
+        max-width: 100%;
         height: 80vh;
-        border: 1px solid #000;
 
         @include portrait-video {
-            max-width: initial;
-            border-right: 0;
-            border-left: 0;
+            max-width: 100%;
+            height: auto;
         }
     }
 }
 
 #bookmarkContainer {
+    background-color: $chat-background-color;
     grid-column: 1 / -1;
     text-align: center;
 
@@ -473,4 +468,8 @@ nav {
         margin: 0.5em;
         text-decoration: none;
     }
+}
+
+#controlContainer {
+    background-color: $chat-background-color;
 }

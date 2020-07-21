@@ -25,5 +25,8 @@
                 </div>
             {% endif %}
         {% endwith %}
+        {% if object.has_chat %}
+            <div id="controlContainer"></div>
+        {% endif %}
     </div>
 {% endblock %}
