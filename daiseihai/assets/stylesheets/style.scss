@@ -471,5 +471,25 @@ nav {
 }
 
 #controlContainer {
+    align-content: space-around;
+    align-items: center;
     background-color: $chat-background-color;
+    display: flex;
+    font-size: 14px;
+    justify-content: space-between;
+
+    div {
+        color: #bbb;
+    }
+
+    button {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 20px;
+        font-weight: 500;
+        line-height: 20px;
+        margin: 0 20px;
+        padding: 0 10px;
+    }
 }

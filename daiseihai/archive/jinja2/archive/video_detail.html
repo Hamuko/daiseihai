@@ -26,7 +26,13 @@
             {% endif %}
         {% endwith %}
         {% if object.has_chat %}
-            <div id="controlContainer"></div>
+            <div id="controlContainer">
+                <button class="chat-delay-button" title="Decrease chat delay" data-amount="-100">-</button>
+                <div title="Chat delay">
+                    <span id="chatDelay">0</span> ms
+                </div>
+                <button class="chat-delay-button" title="Increase chat delay" data-amount="100">+</button>
+            </div>
         {% endif %}
     </div>
 {% endblock %}

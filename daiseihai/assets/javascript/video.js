@@ -1,6 +1,7 @@
 import Papa from 'papaparse';
 
 var chatData = [];
+var chatDelay = 0;
 var chatIndex = 0;
 var chatLastUpdate = 0;
 var chatStart = 0;
@@ -29,7 +30,19 @@ export function ready() {
     for (var i = 0; i < bookmarkButtons.length; i++) {
         bookmarkButtons[i].addEventListener('click', bookmarkSeek);
     }
+    var chatDelayButtons = document.getElementsByClassName('chat-delay-button');
+    for (var i = 0; i < chatDelayButtons.length; i++) {
+        chatDelayButtons[i].addEventListener('click', adjustChatDelay);
+    }
+
     window.addEventListener('popstate', setTimeFromHistory, false);
+}
+
+
+function adjustChatDelay(event) {
+    let chatDelayIndicator = document.getElementById('chatDelay');
+    chatDelay += parseInt(this.dataset.amount);
+    chatDelayIndicator.innerHTML = chatDelay;
 }
 
 
@@ -265,6 +278,7 @@ function updateChat() {
     updatingChat = true;
 
     var time = Math.floor(global.videoElement.currentTime * 1000);
+    time -= chatDelay;
 
     // If the video has gone back in time, find the current chat position again.
     if (previousTime > time) {
@@ -276,6 +290,7 @@ function updateChat() {
             }
             chatIndex += 1;
         }
+        chatIndex = Math.max(chatIndex - MAX_MESSAGES_NUM, 0);
     }
 
     var messages = [];
